@@ -1,0 +1,99 @@
+README 
+Author: Seon Kang
+
+Reinforcement Learning Concepts and Algorithms
+
+n-armed Bandits
+
+	From Wikipedia: 
+	
+	"The multi-armed bandit problem (sometimes called the K- or N-armed bandit problem) is a problem in which a 
+	gambler at a row of slot machines (sometimes known as "one-armed bandits") has to decide which machines to play, 
+	how many times to play each machine and in which order to play them. When played, each machine provides a 
+	random reward from a distribution specific to that machine. The objective of the gambler is to maximize the 
+	sum of rewards earned through a sequence of lever pulls."
+	
+	The Bandit class provides an implementation the levers that allow the user to input the specifications. It
+	is still in the process of transitioning from a hard-coded 3-armed bandit solver to a general n-armed bandit
+	solver so it may have some issues.
+	
+	The UCB1 algorithm follows a policy that is optimistic in the face of uncertainty. The "UCB" stands for "upper
+	confidence bound." This is where the optimism comes in; the algorithm will choose the arm with the maximal
+	optimal upper confidence bound.
+	
+	The epsilon-greedy algorithm chooses levers greedily while maintaining and updating the agents beliefs about the 
+	values of the arms but also pulls a random arm with probability epsilon, which encourages exploration.
+
+The Taxi Domain
+
+	The taxi domain is a simple 5x5 domain with 4 special squares that may be the start/end points. Taxis in the domain
+	can only move in one of the cardinal directions and can pick up and drop off passengers. Usually, the goal is for the 
+	taxi to pick up the passenger and drop them off in the desired goal square. In several cases, the taxi's actions have 
+	a probability of failing and leading to a randomly chosen action.
+
+Dynamic Programming
+
+	Vanilla dynamic programming uses value and policy iteration methods to solve the domain. In simple terms, the agent
+	tries out different actions and incrementally updates its policy and values leading to more accurate values and 
+	more optimal policies as it learns more throughout its iterations.
+	
+	Prioritized sweeping based on Sutton and Barto:
+	
+	As a full backup goes deeper / further "back in time," the number of relevant (useful to back up) state-action 
+	pairs will grow rapidly. However, because these are not always going to be equally useful (the extent to which 
+	they changed will be different), it may be useful to prefer certain backups to be performed earlier than others 
+	(the state-action pairs that experience a bigger change will propagate bigger changes in its backups). 
+	The idea behind prioritized sweeping is to maintain a queue that prioritized by urgency / size of change in 
+	state-action pair and perform backups according to this queue. When the backup at the top of the queue is performed, 
+	all of its predecessor pairs are also eligible to be added to this queue during this time, as long as their 
+	calculated priority is high enough (over some threshold that we choose). Sutton and Barto gives pseudocode 
+	for deterministic environments, for stochastic domains, because we have transition probabilities, 
+	these are factored into our calculations of urgency values for the priority queue (lower probability would 
+	lead to less urgency etc).
+	
+	The DynamicProgramming class implements dynamic programming with prioritized sweeping.
+
+SARSA(lambda)
+
+	SARSA stands for State-Action-Reward-State-Action. SARSA is an on-policy control algorithm for learning a 
+	Markov decision process policy. The agent takes actions based on some metric, usually greedy with respect to value, and
+	uses the interaction with the environment (rewards, transitions, etc) to create an optimal policy.
+	
+	SARSA(lambda) is the eligibility trace version of SARSA. Loosely speaking, the eligibility trace is based on the idea of 
+	controlling how heavily (and relatedly, how far back) we will weigh past events to determine the agent's next action. 
+	
+	The SARSA(lambda) implementation in this project also uses options. Options are temporary policies that are triggered in
+	certain initiation states and will last until an acceptable termination state is reached.
+
+
+Partially Observable Markov Decision Processes
+
+	The definition of Partially Observable Markov Decision Process or POMDP, from Wikipedia:
+	
+	"A partially observable Markov decision process (POMDP) is a generalization of a Markov decision process (MDP). 
+	A POMDP models an agent decision process in which it is assumed that the system dynamics are determined by an MDP, 
+	but the agent cannot directly observe the underlying state. Instead, it must maintain a probability distribution 
+	over the set of possible states, based on a set of observations and observation probabilities, and the underlying 
+	MDP."
+	
+	The POMDP class has code that keeps track of a taxi moving from a start state to an end state and maintains and updates
+	a belief distribution over the possible states based on simulated sensor observations and taxi actions.
+
+
+Kalman Filter
+
+	The Kalman Filter, from Wikipedia:
+	
+	"Kalman filtering, also known as linear quadratic estimation (LQE), is an algorithm that uses a series of 
+	measurements observed over time, containing statistical noise and other inaccuracies, and produces 
+	estimates of unknown variables that tend to be more precise than those based on a single measurement alone."
+	
+	The KalmanFilter class uses the matrices stored in KalmanMatrices and the utilities found in MatrixUtilities to 
+	implement a Kalman filter for an object moving along a two-dimensional plane.
+	
+Codestyle:
+
+	All code in this project adheres to Google's Checkstyle requirements with some exceptions:
+	(1) Tabs instead of 2 spaces.
+	(2) Right curly braces have their own line in multi-block statements.
+	(3) Occasionally ignore variable naming conventions to more closely follow the way some formulas are typically written.
